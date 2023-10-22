@@ -1,3 +1,4 @@
+import random
 import uuid
 
 from project import app
@@ -21,14 +22,15 @@ def healthcheck():
 
 @app.get("/user")
 def get_user():
-    user = users[request.args.get("user_id")]
-    return user
+    user_id = request.args.get("user_id", None)
+    if user_id:
+        return users[user_id]
+    return jsonify({"response": f"user {user_id} does not exist"})
 
 
 @app.post("/user")
 def create_user():
-    user_data = request.get_json()
-    username = user_data['username']
+    username = request.get_json()['username']
     user_id = uuid.uuid4().hex
     user = {"id": user_id, "username": username}
     users[user_id] = user
@@ -37,11 +39,14 @@ def create_user():
 
 @app.delete("/user")
 def delete_user():
-    user = users.pop(request.args.get("user_id"))
-    response = {
-        "response": f'{user["username"]} was deleted'
-    }
-    return jsonify(response)
+    user_id = request.args.get("user_id", None)
+    if user_id:
+        user = users.pop(user_id)
+        response = {
+            "response": f'{user["username"]} was deleted'
+        }
+        return jsonify(response)
+    return jsonify({"response": f"user {user_id} does not exist"})
 
 
 @app.get("/users")
@@ -51,27 +56,42 @@ def get_users():
 
 @app.get("/category")
 def get_category():
-    category = categories.get(request.args.get('category_id'))
-    return category
+    category_id = request.args.get('category_id', None)
+    if category_id:
+        return categories[category_id]
+    return jsonify({"response": f"category {category_id} does not exist"})
 
 
 @app.post("/category")
 def post_category():
-    category_data = request.get_json()['category']
+    category_name = request.get_json()['category']
     cat_id = uuid.uuid4().hex
-    category = {"id": cat_id, "category": category_data}
+    category = {"id": cat_id, "category": category_name}
     categories[cat_id] = category
     return jsonify({cat_id: category})
 
 
 @app.delete("/category")
 def delete_category():
-    category = categories.pop(request.args.get('category_id'))
-    response = {
-        "response": f'category {category} was deleted'
-    }
-    return jsonify(response)
+    category_id = request.args.get("category_id", None)
+    if category_id:
+        category = categories.pop(category_id)
+        response = {
+            "response": f'{category["category"]} was deleted'
+        }
+        return jsonify(response)
+    return jsonify({"response": f"category {category_id} does not exist"})
 
 
-
+@app.post("/record")
+def create_record():
+    record_user_id = request.args.get("user_id", None)
+    record_category_id = request.args.get("category_id", None)
+    date_and_time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    expenses = random.randint(1, 100)
+    record_id = uuid.uuid4().hex
+    record = {"id": record_id, "user_id": record_user_id, "category_id": record_category_id,
+              "date_and_time": date_and_time, "expenses": expenses}
+    records[record_id] = record
+    return record
 
