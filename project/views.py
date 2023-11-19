@@ -57,7 +57,7 @@ def delete_user():
 
 @app.get("/users")
 def get_users():
-    return jsonify({users.values()}), 200
+    return jsonify(users), 200
 
 
 @app.get("/category")
