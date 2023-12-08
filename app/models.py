@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from project import db
+from app import db
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as orm

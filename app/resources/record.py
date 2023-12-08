@@ -1,7 +1,7 @@
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from project.schemas import RecordSchema
-from project.models import RecordModel
+from app.schemas import RecordSchema
+from app.models import RecordModel
 
 records = {}
 blp = Blueprint('user', __name__, description="Operations on record")
@@ -31,6 +31,7 @@ class Record(MethodView):
 @blp.route("/record")
 class RecordList(MethodView):
 
+    @blp.arguments(Re)
     @blp.response(200, RecordSchema(many=True))
     def get(self):
         return list(records.values())

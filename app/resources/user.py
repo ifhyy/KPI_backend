@@ -2,8 +2,8 @@ import uuid
 
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from project.schemas import UserSchema
-from project.models import UserModel
+from app.schemas import UserSchema
+from app.models import UserModel
 
 users = {}
 blp = Blueprint('user', __name__, description="Operations on user")

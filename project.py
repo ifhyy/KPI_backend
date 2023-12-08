@@ -1,8 +1,10 @@
-from project import app
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from project import app, db
-from project.models import UserModel, RecordModel, CategoryModel
+from app import create_app, db
+from app.models import UserModel, RecordModel, CategoryModel
+
+
+app = create_app()
 
 
 @app.shell_context_processor

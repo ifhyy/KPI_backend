@@ -1,7 +1,7 @@
 import random
 import uuid
 
-from project import app
+from app import app
 from flask import jsonify, request, g
 import datetime
 
