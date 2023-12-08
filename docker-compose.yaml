@@ -10,3 +10,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5001:5001"
+    env_file:
+      - .env
+
+#  db:
+#    image: postgres:15.4-alpine3.18
+#    environment:
+#      POSTGRES_USER: "stupk"
+#      POSTGRES_PASSWORD: "qwerty123"
+#      POSTGRES_DB: "finance"
