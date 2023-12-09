@@ -20,11 +20,7 @@ class User(MethodView):
 
     @blp.response(200, UserSchema)
     def delete(self, user_id):
-        try:
-            user = users.pop(user_id)
-            return user
-        except KeyError as e:
-            abort(404, "User not found")
+        raise NotImplemented
 
     @blp.errorhandler(404)
     def handle_not_found(self):

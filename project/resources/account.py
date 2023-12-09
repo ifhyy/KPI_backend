@@ -25,6 +25,10 @@ class Account(MethodView):
         db.session.commit()
         return make_response({'message': 'Funds added to your account'})
 
+    @blp.errorhandler(404)
+    def handle_not_found(self):
+        return make_response({'message': 'Account not found'}, 404)
+
 
 @blp.route("/account")
 class Accounts(MethodView):

@@ -1,7 +1,4 @@
-import random
-import uuid
-import datetime
-
+from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from project.schemas import RecordSchema, RecordQuerySchema, RecordResponseSchema
@@ -21,11 +18,11 @@ class Record(MethodView):
 
     @blp.response(200, RecordSchema)
     def delete(self, record_id):
-        try:
-            record = records.pop(record_id)
-            return record
-        except KeyError:
-            abort(404, "Record not found")
+        raise NotImplemented
+
+    @blp.errorhandler(404)
+    def handle_not_found(self):
+        return make_response({'message': 'Record not found'}, 404)
 
 
 @blp.route("/record")

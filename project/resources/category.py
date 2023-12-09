@@ -1,5 +1,4 @@
-import uuid
-
+from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from sqlalchemy.exc import IntegrityError
@@ -21,11 +20,11 @@ class Category(MethodView):
 
     @blp.response(200, CategorySchema)
     def delete(self, category_id):
-        try:
-            category = categories.pop(category_id)
-            return category
-        except KeyError as e:
-            abort(404, "Category not found")
+        raise NotImplemented
+
+    @blp.errorhandler(404)
+    def handle_not_found(self):
+        return make_response({'message': 'Category not found'}, 404)
 
 
 @blp.route("/category")
