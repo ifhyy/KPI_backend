@@ -31,3 +31,17 @@ class RecordQuerySchema(Schema):
             raise ValidationError("At least one of 'user_id' or 'category_id' must be provided.")
     
 
+class AccountSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    owner_id = fields.Integer(required=True)
+    net_worth = fields.Float()
+
+
+class AccountIncome(Schema):
+    income = fields.Float(required=True)
+
+    @validates_schema
+    def validate_income(self, data, **kwargs):
+        income = data.get("income")
+        if income < 0:
+            raise ValidationError("Income can't be negative")

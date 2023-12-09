@@ -11,7 +11,7 @@ class UserModel(db.Model):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
-    # records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='user')
+    account: orm.WriteOnlyMapped["AccountModel"] = orm.relationship(back_populates='owner')
 
 
 class CategoryModel(db.Model):
@@ -35,4 +35,13 @@ class RecordModel(db.Model):
     user: orm.Mapped[UserModel] = orm.relationship('UserModel', backref='records')
     category: orm.Mapped[CategoryModel] = orm.relationship('CategoryModel', backref='records')
 
-    
+
+class AccountModel(db.Model):
+    __table_name__ = "account"
+
+    id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+    owner_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey(UserModel.id), index=True, unique=True)
+    net_worth: orm.Mapped[float] = orm.mapped_column(sa.Float(precision=2), unique=False, default=0)
+
+    owner: orm.Mapped[UserModel] = orm.relationship('UserModel', back_populates='account', single_parent=True)
+

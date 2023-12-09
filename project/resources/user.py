@@ -1,5 +1,3 @@
-import uuid
-
 from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
@@ -12,7 +10,7 @@ from project.db import db
 blp = Blueprint('user', __name__, description="Operations on user")
 
 
-@blp.route("/user/<string:user_id>")
+@blp.route("/user/<int:user_id>")
 class User(MethodView):
 
     @blp.response(200, UserSchema)

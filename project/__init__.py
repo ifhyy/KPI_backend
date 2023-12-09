@@ -46,6 +46,9 @@ def create_app():
     from .resources.record import blp as record_blp
     api.register_blueprint(record_blp)
 
+    from .resources.account import blp as account_blp
+    api.register_blueprint(account_blp)
+
     return app
 
 
