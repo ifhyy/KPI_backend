@@ -1,8 +1,4 @@
 # KPI backend laboratories
-## Lab №1
-deployed on render.com
-### Check current date and server status
-```shell
-GET https://kpi-backend-cyqx.onrender.com/healthcheck
-```
-
+## Lab №3
+Task variant: 15/3 = 0
+Create user bank account logic
