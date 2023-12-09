@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from project import db
+from project.db import db
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
@@ -11,15 +11,15 @@ class UserModel(db.Model):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
-    records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='user')
+    # records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='user')
 
 
 class CategoryModel(db.Model):
     __table_name__ = "category"
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
-    category_name: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
-    records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='category')
+    category: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
+    # records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='category')
 
 
 class RecordModel(db.Model):

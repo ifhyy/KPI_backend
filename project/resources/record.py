@@ -5,8 +5,9 @@ import datetime
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from project.schemas import RecordSchema, RecordQuerySchema
+from project.models import RecordModel
+from project.db import db
 
-records = {}
 blp = Blueprint('record', __name__, description="Operations on record")
 
 
@@ -15,10 +16,8 @@ class Record(MethodView):
 
     @blp.response(200, RecordSchema)
     def get(self, record_id):
-        try:
-            return records[record_id]
-        except KeyError:
-            abort(404, "Record not found")
+        record = RecordModel.query.get_or_404(record_id)
+        return record
 
     @blp.response(200, RecordSchema)
     def delete(self, record_id):
@@ -38,32 +37,23 @@ class RecordList(MethodView):
         category_id = kwargs.get("category_id")
         user_id = kwargs.get("user_id")
 
-        results = {}
-        for key, value in records.items():
-            if user_id and category_id:
-                if value['user_id'] == user_id and value['category_id'] == category_id:
-                    results[key] = value
-            elif category_id:
-                if value['category_id'] == category_id:
-                    results[key] = value
-            elif user_id:
-                if value['user_id'] == user_id:
-                    results[key] = value
+        query = RecordModel.query
 
-        if results:
-            return list(results), 200
-        abort(404, "Records not found")
+        if user_id:
+            query = query.filter(RecordModel.user_id == user_id)
+
+        if category_id:
+            query = query.filter(RecordModel.category_id == category_id)
+
+        return query.all()
 
     @blp.arguments(RecordSchema)
     @blp.response(201, RecordSchema)
     def post(self, record_data):
-        record_user_id = record_data.get('user_id')
-        record_category_id = record_data.get('category_id')
-        record_sum = record_data.get("sum")
-        date_and_time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        expenses = record_sum
-        record_id = uuid.uuid4().hex
-        record = {"id": record_id, "user_id": record_user_id, "category_id": record_category_id,
-                  "date_and_time": date_and_time, "expenses": expenses}
-        records[record_id] = record
+        record = RecordModel(**record_data)
+        try:
+            db.session.add(record)
+            db.session.commit()
+        except Exception:
+            abort(400, "Error occured")
         return record, 201

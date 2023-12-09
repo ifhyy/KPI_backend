@@ -3,10 +3,12 @@ import uuid
 from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
+from sqlalchemy.exc import IntegrityError
+
 from project.schemas import UserSchema
 from project.models import UserModel
+from project.db import db
 
-users = {}
 blp = Blueprint('user', __name__, description="Operations on user")
 
 
@@ -15,10 +17,8 @@ class User(MethodView):
 
     @blp.response(200, UserSchema)
     def get(self, user_id):
-        try:
-            return users[user_id]
-        except KeyError:
-            abort(404, "User not found")
+        user = UserModel.query.get_or_404(user_id)
+        return user
 
     @blp.response(200, UserSchema)
     def delete(self, user_id):
@@ -38,13 +38,15 @@ class UserList(MethodView):
 
     @blp.response(200, UserSchema(many=True))
     def get(self):
-        return list(users.values())
+        return UserModel.query.all()
 
     @blp.arguments(UserSchema)
     @blp.response(201, UserSchema)
     def post(self, user_data):
-        username = user_data.get('username')
-        user_id = uuid.uuid4().hex
-        user = {"id": user_id, "username": username}
-        users[user_id] = user
+        user = UserModel(**user_data)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except IntegrityError:
+            abort(400, message="User with this name already exists")
         return user, 201

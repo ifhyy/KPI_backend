@@ -19,11 +19,10 @@ from flask import Flask
 from flask_smorest import Api
 from .resources import user, category, record
 
+from project.db import db
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-db = SQLAlchemy()
 migrate = Migrate()
 api = Api()
 
