@@ -1,4 +1,6 @@
 from marshmallow import Schema, fields, validates_schema, ValidationError
+from project.db import db
+from project.models import UserModel, CategoryModel, AccountModel
 
 
 class UserSchema(Schema):
@@ -12,6 +14,34 @@ class CategorySchema(Schema):
 
 
 class RecordSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    user_id = fields.Integer(required=True)
+    category_id = fields.Integer(required=True)
+    sum = fields.Float(required=True)
+
+    @validates_schema
+    def validate_user_id(self, data, **kwargs):
+        user_id = data['user_id']
+        exists = db.session.query(UserModel.id).filter_by(id=user_id).first() is not None
+        if not exists:
+            raise ValidationError("User with given id not found")
+
+    @validates_schema
+    def validate_category_id(self, data, **kwargs):
+        category_id = data['category_id']
+        exists = db.session.query(CategoryModel.id).filter_by(id=category_id).first() is not None
+        if not exists:
+            raise ValidationError("Category with given id not found")
+
+    @validates_schema
+    def validate_sum(self, data, **kwargs):
+        user_id = data['user_id']
+        sum = data['sum']
+        if (AccountModel.query.filter_by(owner_id=user_id).first().net_worth - sum) < 0:
+            raise ValidationError("User has not enough money on account, operation cancelled")
+
+
+class RecordResponseSchema(Schema):
     id = fields.Integer(dump_only=True)
     user_id = fields.Integer(required=True)
     category_id = fields.Integer(required=True)

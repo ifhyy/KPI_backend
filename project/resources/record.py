@@ -4,8 +4,8 @@ import datetime
 
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from project.schemas import RecordSchema, RecordQuerySchema
-from project.models import RecordModel
+from project.schemas import RecordSchema, RecordQuerySchema, RecordResponseSchema
+from project.models import RecordModel, AccountModel
 from project.db import db
 
 blp = Blueprint('record', __name__, description="Operations on record")
@@ -51,7 +51,11 @@ class RecordList(MethodView):
     @blp.response(201, RecordSchema)
     def post(self, record_data):
         record = RecordModel(**record_data)
+        user_id = record_data['user_id']
+        sum = record_data['sum']
+        account = AccountModel.query.filter_by(owner_id=user_id).first()
         try:
+            account.net_worth -= sum
             db.session.add(record)
             db.session.commit()
         except Exception:
