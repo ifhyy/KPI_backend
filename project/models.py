@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app import db
+from project import db
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
@@ -30,6 +30,7 @@ class RecordModel(db.Model):
     category_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey(CategoryModel.id), index=True)
     created_at: orm.Mapped[datetime] = orm.mapped_column(sa.DateTime(timezone=True), server_default=sa.func.now(),
                                                          nullable=False)
+    sum: orm.Mapped[float] = orm.mapped_column(sa.Float(precision=2), unique=False, nullable=False)
 
     user: orm.Mapped[UserModel] = orm.relationship('UserModel', backref='records')
     category: orm.Mapped[CategoryModel] = orm.relationship('CategoryModel', backref='records')

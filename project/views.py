@@ -1,13 +1,13 @@
 import random
 import uuid
 
-from app import app
+from project import app
 from flask import jsonify, request, g
 import datetime
 
-users = {}
-categories = {}
-records = {}
+# users = {}
+# categories = {}
+# records = {}
 
 
 @app.route("/healthcheck")
@@ -18,7 +18,7 @@ def healthcheck():
     }
 
     return jsonify(response), 200
-
+#
 #
 # @app.get("/user")
 # def get_user():

@@ -8,7 +8,7 @@ dotenv.load_dotenv(os.path.join(basedir, '.env'))
 class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
     # SQLALCHEMY_DATABASE_URI = (f'postgresql://stupk:qwerty123@localhost:5432/finance'
-    #                            or 'sqlite:///' + os.path.join(basedir, 'app.db'))
+    #                            or 'sqlite:///' + os.path.join(basedir, 'project.db'))
     PROPAGATE_EXCEPTIONS = True
     FLASK_DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False

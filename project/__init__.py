@@ -1,3 +1,20 @@
+# from flask import Flask
+# from flask_smorest import Api
+# from flask_sqlalchemy import SQLAlchemy
+# from config import Config
+# from .resources import user, category, record
+#
+# app = Flask(__name__)
+# app.config.from_object(Config)
+# db = SQLAlchemy(app)
+# api = Api(app)
+# api.register_blueprint(user.blp)
+# api.register_blueprint(category.blp)
+# api.register_blueprint(record.blp)
+#
+#
+# import project.views
+#
 from flask import Flask
 from flask_smorest import Api
 from .resources import user, category, record
@@ -31,4 +48,11 @@ def create_app():
     api.register_blueprint(record_blp)
 
     return app
+
+
+app = create_app()
+
+
+import project.views
+
 

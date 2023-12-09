@@ -2,8 +2,7 @@ import uuid
 
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from app.schemas import CategorySchema
-from app.models import CategoryModel
+from project.schemas import CategorySchema
 
 categories = {}
 blp = Blueprint('category', __name__, description="Operations on category")
@@ -21,13 +20,11 @@ class Category(MethodView):
 
     @blp.response(200, CategorySchema)
     def delete(self, category_id):
-        if category_id:
-            try:
-                category = categories.pop(category_id)
-                return category
-            except KeyError as e:
-                abort(404, "Category not found")
-        abort(400, "Required argument 'category_id' wasn't passed")
+        try:
+            category = categories.pop(category_id)
+            return category
+        except KeyError as e:
+            abort(404, "Category not found")
 
 
 @blp.route("/category")
@@ -46,4 +43,3 @@ class CategoryList(MethodView):
             category = {"id": cat_id, "category": category_name}
             categories[cat_id] = category
             return category, 201
-        return jsonify({"message": "Required data 'category' wasn't passed"}), 400
