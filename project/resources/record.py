@@ -1,7 +1,7 @@
 from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from project.schemas import RecordSchema, RecordQuerySchema, RecordResponseSchema
+from project.schemas import RecordSchema, RecordQuerySchema
 from project.models import RecordModel, AccountModel
 from project.db import db
 

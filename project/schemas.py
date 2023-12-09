@@ -20,32 +20,33 @@ class RecordSchema(Schema):
     sum = fields.Float(required=True)
 
     @validates_schema
-    def validate_user_id(self, data, **kwargs):
+    def validate(self, data, **kwargs):
+        self.validate_user(data)
+        self.validate_category_id(data)
+        self.validate_sum(data)
+        return data
+
+    def validate_user(self, data, **kwargs):
         user_id = data['user_id']
-        exists = db.session.query(UserModel.id).filter_by(id=user_id).first() is not None
-        if not exists:
+        user = UserModel.query.filter_by(id=user_id).first()
+        if not user:
             raise ValidationError("User with given id not found")
 
-    @validates_schema
+        account = user.account
+        if not account:
+            raise ValidationError("User doesn't have account yet. You should create it first")
+
     def validate_category_id(self, data, **kwargs):
         category_id = data['category_id']
         exists = db.session.query(CategoryModel.id).filter_by(id=category_id).first() is not None
         if not exists:
             raise ValidationError("Category with given id not found")
 
-    @validates_schema
     def validate_sum(self, data, **kwargs):
         user_id = data['user_id']
         sum = data['sum']
         if (AccountModel.query.filter_by(owner_id=user_id).first().net_worth - sum) < 0:
             raise ValidationError("User has not enough money on account, operation cancelled")
-
-
-class RecordResponseSchema(Schema):
-    id = fields.Integer(dump_only=True)
-    user_id = fields.Integer(required=True)
-    category_id = fields.Integer(required=True)
-    sum = fields.Float(required=True)
 
 
 class RecordQuerySchema(Schema):
