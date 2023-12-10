@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask import make_response
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
@@ -18,6 +19,7 @@ class Account(MethodView):
         account = AccountModel.query.get_or_404(account_id)
         return account
 
+    @jwt_required()
     @blp.arguments(AccountIncome(partial=True))
     def put(self, data, account_id):
         account = AccountModel.query.get_or_404(account_id)

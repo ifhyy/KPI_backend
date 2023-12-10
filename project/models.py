@@ -11,6 +11,7 @@ class UserModel(db.Model):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
+    password: orm.Mapped[str] = orm.mapped_column(sa.String(256))
     account: orm.Mapped["AccountModel"] = orm.relationship(back_populates='owner')
 
 
@@ -19,7 +20,6 @@ class CategoryModel(db.Model):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     category: orm.Mapped[str] = orm.mapped_column(sa.String(64), index=True, unique=True)
-    # records: orm.WriteOnlyMapped['RecordModel'] = orm.relationship('RecordModel', backref='category')
 
 
 class RecordModel(db.Model):

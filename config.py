@@ -18,4 +18,5 @@ class Config(object):
     OPENAPI_URL_PREFIX = "/"
     OPENAPI_SWAGGER_UI_PATH = "/swagger-ui"
     OPENAPI_SWAGGER_UI_URL = ""
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
