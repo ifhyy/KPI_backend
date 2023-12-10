@@ -1,12 +1,12 @@
 from flask import make_response, jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from passlib.handlers.pbkdf2 import pbkdf2_sha256
 from sqlalchemy.exc import IntegrityError
 
 from project.schemas import UserSchema
-from project.models import UserModel
+from project.models import UserModel, AccountModel
 from project.db import db
 
 blp = Blueprint('user', __name__, description="Operations on user")
@@ -15,11 +15,13 @@ blp = Blueprint('user', __name__, description="Operations on user")
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
 
+    @jwt_required()
     @blp.response(200, UserSchema)
     def get(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         return user
 
+    @jwt_required()
     @blp.response(200, UserSchema)
     def delete(self, user_id):
         raise NotImplemented
@@ -32,6 +34,7 @@ class User(MethodView):
 @blp.route("/user")
 class UserList(MethodView):
 
+    @jwt_required()
     @blp.response(200, UserSchema(many=True))
     def get(self):
         return UserModel.query.all()
@@ -52,6 +55,9 @@ class Registration(MethodView):
             db.session.commit()
         except IntegrityError:
             abort(400, message="User with this name already exists")
+        account = AccountModel(owner_id=user.id)
+        db.session.add(account)
+        db.session.commit()
         return make_response(jsonify({"message": f'{username} user registered'}))
 
 

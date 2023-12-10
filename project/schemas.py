@@ -1,3 +1,4 @@
+from flask_jwt_extended import get_jwt_identity
 from marshmallow import Schema, fields, validates_schema, ValidationError
 from project.db import db
 from project.models import UserModel, CategoryModel, AccountModel
@@ -20,22 +21,17 @@ class RecordSchema(Schema):
     category_id = fields.Integer(required=True)
     sum = fields.Float(required=True)
 
+
+class RecordCreateSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    category_id = fields.Integer(required=True)
+    sum = fields.Float(required=True)
+
     @validates_schema
     def validate(self, data, **kwargs):
-        self.validate_user(data)
         self.validate_category_id(data)
         self.validate_sum(data)
         return data
-
-    def validate_user(self, data, **kwargs):
-        user_id = data['user_id']
-        user = UserModel.query.filter_by(id=user_id).first()
-        if not user:
-            raise ValidationError("User with given id not found")
-
-        account = user.account
-        if not account:
-            raise ValidationError("User doesn't have account yet. You should create it first")
 
     def validate_category_id(self, data, **kwargs):
         category_id = data['category_id']
@@ -44,7 +40,7 @@ class RecordSchema(Schema):
             raise ValidationError("Category with given id not found")
 
     def validate_sum(self, data, **kwargs):
-        user_id = data['user_id']
+        user_id = get_jwt_identity()
         sum = data['sum']
         if (AccountModel.query.filter_by(owner_id=user_id).first().net_worth - sum) < 0:
             raise ValidationError("User has not enough money on account, operation cancelled")

@@ -41,7 +41,7 @@ class AccountModel(db.Model):
 
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     owner_id: orm.Mapped[int] = orm.mapped_column(sa.Integer, sa.ForeignKey(UserModel.id), index=True, unique=True)
-    net_worth: orm.Mapped[float] = orm.mapped_column(sa.Float(precision=2), unique=False, default=0)
+    net_worth: orm.Mapped[float] = orm.mapped_column(sa.Float(precision=2), unique=False, default=1500)
 
     owner: orm.Mapped[UserModel] = orm.relationship('UserModel', back_populates='account', single_parent=True)
 
